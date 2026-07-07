@@ -1,3 +1,5 @@
 mic-in-use
 *.o
 .DS_Store
+notifier/icon-1024.png
+ClaudeMicGate.app/

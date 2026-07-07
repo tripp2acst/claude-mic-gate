@@ -34,22 +34,30 @@ if [[ -x "$MIC" ]] && "$MIC"; then
   fi
   [[ -z "$PROJECT" ]] && PROJECT="$(basename "$PWD")"
 
-  # Which IDE/terminal? Best-effort from TERM_PROGRAM.
+  # Which IDE/terminal? Best-effort from TERM_PROGRAM — IDE is the label shown on
+  # the banner; TARGET is the bundle id the banner brings to the front on click.
   case "$TERM_PROGRAM" in
-    vscode)         IDE="VS Code" ;;
-    iTerm.app)      IDE="iTerm" ;;
-    Apple_Terminal) IDE="Terminal" ;;
-    WarpTerminal)   IDE="Warp" ;;
-    ghostty)        IDE="Ghostty" ;;
-    Hyper)          IDE="Hyper" ;;
-    *)              IDE="$TERM_PROGRAM" ;;
+    vscode)         IDE="VS Code" ; TARGET="com.microsoft.VSCode" ;;
+    iTerm.app)      IDE="iTerm"   ; TARGET="com.googlecode.iterm2" ;;
+    Apple_Terminal) IDE="Terminal"; TARGET="com.apple.Terminal" ;;
+    WarpTerminal)   IDE="Warp"    ; TARGET="dev.warp.Warp-Stable" ;;
+    ghostty)        IDE="Ghostty" ; TARGET="com.mitchellh.ghostty" ;;
+    Hyper)          IDE="Hyper"   ; TARGET="co.zeit.hyper" ;;
+    *)              IDE="$TERM_PROGRAM" ; TARGET="" ;;
   esac
 
-  SUB="$PROJECT"
-  [[ -n "$IDE" ]] && SUB="$PROJECT · $IDE"
-
-  # strip double-quotes so values can't break the AppleScript string
-  osascript -e "display notification \"${MSG//\"/}\" with title \"Claude Code\" subtitle \"${SUB//\"/}\"" >/dev/null 2>&1
+  # Prefer the bundled notifier app: it shows a custom icon and, on click, brings
+  # the source IDE to the front. Falls back to a plain osascript banner (Script
+  # Editor icon, no click target) if the app hasn't been built.
+  NOTIFIER="$(dirname "$0")/ClaudeMicGate.app/Contents/MacOS/Notifier"
+  if [[ -x "$NOTIFIER" ]]; then
+    nohup "$NOTIFIER" "$PROJECT" "$IDE" "$MSG" "$TARGET" >/dev/null 2>&1 &
+    disown 2>/dev/null
+  else
+    SUB="$PROJECT"
+    [[ -n "$IDE" ]] && SUB="$PROJECT · $IDE"
+    osascript -e "display notification \"${MSG//\"/}\" with title \"Claude Code\" subtitle \"${SUB//\"/}\"" >/dev/null 2>&1
+  fi
   exit 0
 fi
 

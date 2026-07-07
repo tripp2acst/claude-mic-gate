@@ -20,6 +20,10 @@ echo "Installing cm-gate.sh..."
 cp "$SRC_DIR/cm-gate.sh" "$HOOKS_DIR/cm-gate.sh"
 chmod +x "$HOOKS_DIR/cm-gate.sh"
 
+echo "Building notifier app (custom icon + click-to-focus)..."
+bash "$SRC_DIR/notifier/build.sh" "$HOOKS_DIR" || \
+  echo "warning: notifier build failed; cm-gate.sh will fall back to a plain osascript banner."
+
 # Sanity check: idle mic should report "not in use" (exit 1).
 if "$HOOKS_DIR/mic-in-use"; then
   echo "note: mic-in-use reports the mic is currently LIVE (are you on a call?)."
@@ -29,16 +33,23 @@ fi
 
 cat <<'EOF'
 
-Installed to ~/.claude/hooks/ (mic-in-use, cm-gate.sh).
+Installed to ~/.claude/hooks/ (mic-in-use, cm-gate.sh, ClaudeMicGate.app).
 
 Now point your sound hooks at cm-gate.sh in ~/.claude/settings.json, e.g.:
 
   "Stop": [
     { "hooks": [
         { "type": "command",
-          "command": "bash ~/.claude/hooks/cm-gate.sh ~/sounds/done.mp3" }
+          "command": "bash ~/.claude/hooks/cm-gate.sh ~/sounds/done.mp3 'Claude finished'" }
     ] }
   ]
+
+The second argument is the banner text shown while you're on a call.
+
+One-time notification setup (so the on-call banners appear):
+  System Settings > Notifications > claude-mic-gate
+    - Allow Notifications: on
+    - Alert Style: Persistent   (Temporary auto-dismisses before you can click it)
 
 Restart Claude Code afterward (hooks are read at session start).
 EOF
