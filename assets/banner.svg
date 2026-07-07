@@ -1,0 +1,45 @@
+<svg width="1500" height="340" viewBox="0 0 1500 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1a1e"/>
+      <stop offset="1" stop-color="#26232b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e8845f"/>
+      <stop offset="1" stop-color="#d97757"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1500" height="340" fill="url(#bg)"/>
+  <rect width="1500" height="6" fill="url(#accent)"/>
+
+  <!-- Mic + mute-slash mark -->
+  <g transform="translate(150 170)">
+    <circle r="96" fill="#2f2b34"/>
+    <circle r="96" fill="none" stroke="url(#accent)" stroke-width="3" opacity="0.6"/>
+    <!-- microphone -->
+    <g stroke="#f5f3f0" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="-19" y="-46" width="38" height="60" rx="19" fill="#f5f3f0" stroke="none"/>
+      <path d="M -38 -6 a 38 38 0 0 0 76 0"/>
+      <line x1="0" y1="32" x2="0" y2="52"/>
+      <line x1="-20" y1="52" x2="20" y2="52"/>
+    </g>
+    <!-- mute slash -->
+    <line x1="-70" y1="-70" x2="70" y2="70" stroke="url(#accent)" stroke-width="12" stroke-linecap="round"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="300" y="158" font-size="76" font-weight="700" fill="#f5f3f0" letter-spacing="-1">claude-mic-gate</text>
+  <text x="303" y="212" font-size="30" font-weight="400" fill="#b8b2ac">Mutes Claude Code notification sounds while you're on a call.</text>
+
+  <!-- tag row -->
+  <g transform="translate(303 250)" font-size="20" font-weight="600" fill="#d97757">
+    <text x="0" y="16">macOS</text>
+    <text x="110" y="16" fill="#8b857f">&#183;</text>
+    <text x="130" y="16">Swift + Bash</text>
+    <text x="300" y="16" fill="#8b857f">&#183;</text>
+    <text x="320" y="16">zero dependencies</text>
+    <text x="560" y="16" fill="#8b857f">&#183;</text>
+    <text x="580" y="16">no network</text>
+  </g>
+</svg>

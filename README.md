@@ -1,4 +1,17 @@
-# claude-mic-gate
+<p align="center">
+  <img src="assets/banner.png" alt="claude-mic-gate" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/tripp2acst/claude-mic-gate/actions/workflows/codeql.yml"><img src="https://github.com/tripp2acst/claude-mic-gate/actions/workflows/codeql.yml/badge.svg" alt="CodeQL"></a>
+  <a href="https://github.com/tripp2acst/claude-mic-gate/actions/workflows/shellcheck.yml"><img src="https://github.com/tripp2acst/claude-mic-gate/actions/workflows/shellcheck.yml/badge.svg" alt="ShellCheck"></a>
+  <img src="https://img.shields.io/badge/platform-macOS-000000?logo=apple&logoColor=white" alt="Platform: macOS">
+  <img src="https://img.shields.io/badge/built%20with-Swift%20%2B%20Bash-F05138?logo=swift&logoColor=white" alt="Built with Swift and Bash">
+  <img src="https://img.shields.io/badge/dependencies-none-2ea44f" alt="Zero dependencies">
+  <img src="https://img.shields.io/badge/network-none-2ea44f" alt="No network access">
+  <img src="https://img.shields.io/badge/records%20audio-no-2ea44f" alt="Records no audio">
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/tripp2acst/claude-mic-gate" alt="License: MIT"></a>
+</p>
 
 Silence your [Claude Code](https://claude.com/claude-code) sound hooks while you're on a call — automatically, using your own sounds.
 
@@ -74,6 +87,18 @@ bash ~/.claude/hooks/cm-gate.sh ~/sounds/done.mp3
 - This keys off the **microphone**, not any specific app — so any call (Teams, Zoom, Meet, FaceTime, phone hand-off, a browser call) will mute your sounds. That's usually what you want; there's no per-app allowlist.
 - Push-to-talk voice dictation also uses the mic, but only while you hold the key — completion sounds fire *after* you release, so they won't get swallowed in practice.
 - The compiled binary is architecture-specific and isn't committed; `install.sh` builds it locally. To rebuild manually: `swiftc -O mic-in-use.swift -o mic-in-use`.
+
+## Security and privacy
+
+This tool touches your microphone, so it's fair to ask what it does with it. The short version: it reads a status flag, never any audio.
+
+- **No audio is captured or recorded.** `mic-in-use` only reads CoreAudio's `kAudioDevicePropertyDeviceIsRunningSomewhere` boolean — the same flag that lights the macOS orange mic dot. It opens no input stream and buffers no samples.
+- **No network.** Nothing here makes a network call. No telemetry, no analytics, no update check. Nothing about your mic state, your calls, or your usage leaves the machine.
+- **No elevated privileges.** It runs as you, reads a public IORegistry/CoreAudio property, and plays a sound file via `afplay`. No `sudo`, no daemon, no persistence beyond the two files in `~/.claude/hooks/`.
+- **Auditable in minutes.** The whole thing is ~50 lines of Swift plus two short shell scripts, all in this repo. The committed source is what runs — the binary is compiled locally by `install.sh`, never downloaded.
+- **Continuously scanned.** Every push runs [CodeQL](https://github.com/tripp2acst/claude-mic-gate/actions/workflows/codeql.yml) against the Swift and [ShellCheck](https://github.com/tripp2acst/claude-mic-gate/actions/workflows/shellcheck.yml) against the shell scripts (see the badges above).
+
+macOS may prompt no one for microphone access here, because the running-state flag isn't protected input — the gate never actually listens.
 
 ## License
 
