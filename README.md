@@ -84,6 +84,8 @@ Use whatever sound files you like — `cm-gate.sh` just plays `$1` via `afplay`.
 
 macOS attributes `osascript` notifications to **Script Editor**, so you need to allow them once: **System Settings → Notifications → Script Editor → Allow Notifications** (style: Alerts or Banners). If you run a Do Not Disturb / meeting Focus during calls, macOS holds the banner in Notification Center rather than popping it — expected, and usually what you want mid-call.
 
+> **Why the banner shows the Script Editor icon.** macOS funnels every AppleScript-posted notification — whether from `osascript` or a standalone compiled `.app` — under a single "Script Editor" identity, so the icon can't be swapped from a shell script. Changing it would require a code-signed app built on the `UserNotifications` framework (the older `terminal-notifier` route relies on the removed `NSUserNotification` API and no longer fires on current macOS). Since the project and IDE are already in the banner text, the icon is left as-is by design.
+
 ## Test it
 
 ```sh
